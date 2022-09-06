@@ -35,6 +35,16 @@ void process(int number, int time, int parent)
     printf("Prosess %d ferdig, (me: %d) (parent: %d) (time: %s)\n", number, getpid(), parent, getTime());
 }
 
+void procChild(int id, int sleep)
+{
+    int parent = getpid();
+    fork();
+    if (getpid() != parent)
+    {
+        process(id, sleep, parent);
+    }
+}
+
 int main(int argc, char *argv)
 {
     int parent = 0;
@@ -42,12 +52,7 @@ int main(int argc, char *argv)
     if (isChild(rc))
     {
         process(2, 3, parent);
-        parent = getpid();
-        fork();
-        if (getpid() != parent)
-        {
-            process(3, 2, parent);
-        }
+        procChild(3, 2);
     }
     else
     {
@@ -57,12 +62,6 @@ int main(int argc, char *argv)
         if (getpid() != parent)
         {
             process(1, 2, parent);
-            parent = getpid();
-            fork();
-            if (getpid() != parent)
-            {
-                process(3, 2, parent);
-            }
         }
         else
         {
@@ -71,12 +70,7 @@ int main(int argc, char *argv)
             if (getpid() != parent)
             {
                 process(4, 3, parent);
-                parent = getpid();
-                fork();
-                if (getpid() != parent)
-                {
-                    process(5, 3, parent);
-                }
+                procChild(5, 3);
             }
         }
     }
